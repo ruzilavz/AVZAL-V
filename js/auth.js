@@ -88,6 +88,6 @@ authInput.addEventListener("keydown", (e) => {
     }
   } catch (e) {}
 
-  // если нет сохранённого входа — показываем экран кода
-  authOverlay.style.display = "flex";
+  // authOverlay.style.display = "flex";
+  setAuth({ code: "GUEST", role: "guest" });
 })();
