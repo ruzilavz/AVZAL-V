@@ -4,7 +4,7 @@ const chatMessagesEl = document.getElementById("chat-messages");
 const chatFormEl = document.getElementById("chat-form");
 const chatInputEl = document.getElementById("chat-input");
 
-// пользователи
+// пользователи для микро‑профилей
 const chatUsers = {
   me: {
     id: "me",
@@ -29,38 +29,32 @@ function getTime() {
 const chatState = [
   {
     from: "bot",
-    text: "Привет! Я бот AVZALØV. Пока тут только я, но скоро будут живые пользователи.",
+    text: "Привет! Я ИИ‑бот AVZALØV. Пиши, отвечу на русском 😊",
     time: getTime(),
   },
 ];
 
-function buildBotReply(userText) {
+// запасной локальный ответ, если OpenAI недоступен
+function buildFallbackReply(userText) {
   const text = userText.toLowerCase();
 
   if (text.includes("привет") || text.includes("салам")) {
-    return "Привет! Можешь спрашивать про треки, релизы и ранний доступ 🎵";
+    return "Привет! Можешь спрашивать про треки, релизы и сам проект.";
   }
 
   if (text.includes("трек") || text.includes("песня")) {
-    return "Новинки уже в плеере. Листай треки и жди даты релизов — всё в карточках!";
+    return "Все треки в плеере. Листай и смотри, что уже доступно.";
   }
 
-  if (text.includes("когда") || text.includes("релиз")) {
-    return "Точные даты релизов указаны у каждого трека. Некоторые доступны в раннем доступе 😉";
-  }
-
-  if (text.includes("код") || text.includes("доступ")) {
-    return "Доступ к проекту выдаётся по спец‑кодам от админа. Если у тебя есть код — введи его на экране входа.";
-  }
-
-  return "Я услышал тебя. Я бот и сейчас отвечаю вместо живых пользователей. Скоро здесь будет больше жизни 🙌";
+  return "Я сейчас без подключения к ИИ, но всё равно стараюсь отвечать 🙂";
 }
 
+// рендер диалога: микро‑профиль + сообщение — один блок
 function renderChat() {
   chatMessagesEl.innerHTML = "";
 
   chatState.forEach((msg) => {
-    const user = chatUsers[msg.from] || chatUsers["bot"];
+    const user = chatUsers[msg.from] || chatUsers.bot;
 
     const row = document.createElement("div");
     row.className =
@@ -70,48 +64,53 @@ function renderChat() {
     const inner = document.createElement("div");
     inner.className = "chat-row-inner";
 
-    // микропрофиль рисуем только для бота (и вообще не для "me")
-    if (msg.from !== "me") {
-      const mini = document.createElement("div");
-      mini.className = "chat-mini-profile";
+    // микро‑профиль показываем и для бота, и для "me"
+    const mini = document.createElement("div");
+    mini.className = "chat-mini-profile";
 
-      const avatar = document.createElement("div");
-      avatar.className = "chat-mini-avatar";
-      avatar.textContent = (user.name || "?").charAt(0).toUpperCase();
+    const avatar = document.createElement("div");
+    avatar.className = "chat-mini-avatar";
+    avatar.textContent = (user.name || "?").charAt(0).toUpperCase();
 
-      const main = document.createElement("div");
-      main.className = "chat-mini-main";
+    const main = document.createElement("div");
+    main.className = "chat-mini-main";
 
-      const nameEl = document.createElement("div");
-      nameEl.className = "chat-mini-name";
-      nameEl.textContent = user.name;
+    const nameEl = document.createElement("div");
+    nameEl.className = "chat-mini-name";
+    nameEl.textContent = user.name;
 
-      const actions = document.createElement("div");
-      actions.className = "chat-mini-actions";
+    main.appendChild(nameEl);
 
+    const actions = document.createElement("div");
+    actions.className = "chat-mini-actions";
+
+    // кнопки только для бота (ЛС / Друзья), для "me" они не нужны
+    if (msg.from === "bot") {
       const dmBtn = document.createElement("button");
       dmBtn.className = "chat-mini-btn chat-mini-btn--primary";
       dmBtn.textContent = "ЛС";
-      dmBtn.dataset.user = user.id;
-      dmBtn.dataset.action = "dm";
+      dmBtn.addEventListener("click", () => {
+        chatInputEl.value = `${user.username} `;
+        chatInputEl.focus();
+      });
 
       const friendBtn = document.createElement("button");
       friendBtn.className = "chat-mini-btn";
-      friendBtn.dataset.user = user.id;
-      friendBtn.dataset.action = "friend";
       friendBtn.textContent = user.isFriend ? "В друзьях" : "Добавить";
+      friendBtn.addEventListener("click", () => {
+        user.isFriend = !user.isFriend;
+        friendBtn.textContent = user.isFriend ? "В друзьях" : "Добавить";
+      });
 
       actions.appendChild(dmBtn);
       actions.appendChild(friendBtn);
-
-      main.appendChild(nameEl);
-      main.appendChild(actions);
-
-      mini.appendChild(avatar);
-      mini.appendChild(main);
-
-      inner.appendChild(mini);
     }
+
+    mini.appendChild(avatar);
+    mini.appendChild(main);
+    mini.appendChild(actions);
+
+    inner.appendChild(mini);
 
     const bubble = document.createElement("div");
     bubble.className =
@@ -130,36 +129,41 @@ function renderChat() {
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
 
-// обработка кликов по ЛС / Друзья
-chatMessagesEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".chat-mini-btn");
-  if (!btn) return;
+// отправка истории на бэкенд ИИ
+async function sendToBot() {
+  const messagesForApi = chatState.map((m) => ({
+    role: m.from === "me" ? "user" : "assistant",
+    content: m.text,
+  }));
 
-  const userId = btn.dataset.user;
-  const action = btn.dataset.action;
-  const user = chatUsers[userId];
-  if (!user) return;
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: messagesForApi }),
+  });
 
-  if (action === "dm") {
-    // подставляем @ник бота
-    chatInputEl.value = `${user.username} `;
-    chatInputEl.focus();
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`HTTP ${res.status}: ${text}`);
   }
 
-  if (action === "friend") {
-    user.isFriend = !user.isFriend;
-    renderChat();
+  const data = await res.json();
+  if (!data.ok) {
+    throw new Error(data.error || "Ошибка бота");
   }
-});
 
-// отправка сообщения + ответ бота
-chatFormEl.addEventListener("submit", (e) => {
+  return data.answer;
+}
+
+// обработка отправки сообщения
+chatFormEl.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = chatInputEl.value.trim();
   if (!text) return;
 
   const time = getTime();
 
+  // добавляем своё сообщение
   chatState.push({
     from: "me",
     text,
@@ -168,15 +172,23 @@ chatFormEl.addEventListener("submit", (e) => {
   chatInputEl.value = "";
   renderChat();
 
-  setTimeout(() => {
-    const reply = buildBotReply(text);
+  try {
+    const answer = await sendToBot();
     chatState.push({
       from: "bot",
-      text: reply,
+      text: answer,
       time: getTime(),
     });
     renderChat();
-  }, 700);
+  } catch (err) {
+    console.error("Ошибка ИИ‑бота:", err);
+    chatState.push({
+      from: "bot",
+      text: buildFallbackReply(text),
+      time: getTime(),
+    });
+    renderChat();
+  }
 });
 
 renderChat();
