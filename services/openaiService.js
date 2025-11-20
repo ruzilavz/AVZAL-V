@@ -1,18 +1,36 @@
 // services/openaiService.js
-const OpenAI = require("openai");
+let client = null;
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function ensureClient() {
+  if (client) return client;
+
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("OPENAI_API_KEY не задан, бот недоступен");
+  }
+
+  try {
+    const OpenAI = require("openai");
+    client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    return client;
+  } catch (err) {
+    const message =
+      err.code === "MODULE_NOT_FOUND"
+        ? "Пакет openai не установлен"
+        : "Не удалось инициализировать OpenAI";
+    const wrapped = new Error(message);
+    wrapped.cause = err;
+    throw wrapped;
+  }
+}
 
 /**
  * messages — массив вида:
  * [{ role: "user" | "assistant", content: "..." }, ...]
  */
 async function askOpenAI(messages) {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY не задан в .env");
-  }
+  const client = ensureClient();
 
   const systemMessage = {
     role: "system",
