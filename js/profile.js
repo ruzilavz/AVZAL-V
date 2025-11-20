@@ -83,7 +83,14 @@ profileTabs.forEach((btn) => {
 // редактирование профиля (только админ / супер‑админ)
 profileEditBtn.addEventListener("click", () => {
   const role = window.currentUser?.role || "гость";
-  if (!(role === "super_admin" || role.startsWith("admin"))) {
+  const lower = role.toLowerCase();
+
+  const isAdmin =
+    role === "Администратор" ||
+    lower === "super_admin" ||
+    lower.startsWith("admin");
+
+  if (!isAdmin) {
     alert("Редактировать профиль может только админ.");
     return;
   }
