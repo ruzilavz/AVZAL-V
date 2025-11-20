@@ -1,4 +1,5 @@
 // js/player.js
+const playerScreen = document.getElementById("screen-player");
 
 // Берём данные треков из глобального массива (из tracks-data.js)
 const tracks = window.RELEASED_TRACKS_DATA || [];
@@ -77,6 +78,7 @@ function play() {
     .then(() => {
       isPlaying = true;
       updatePlayButton();
+      playerScreen.classList.add("is-playing");
     })
     .catch(console.error);
 }
@@ -85,7 +87,9 @@ function pause() {
   audioEl.pause();
   isPlaying = false;
   updatePlayButton();
+  playerScreen.classList.remove("is-playing");
 }
+
 
 function togglePlay() {
   if (isPlaying) pause();

@@ -129,9 +129,10 @@
       </header>
 
       <div class="profile-username">@avzalov</div>
-        <p id="profile-bio" class="profile-bio">
-          Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
-        </p>
+      <div id="profile-role" class="profile-role">Роль: гость</div>
+      <p id="profile-bio" class="profile-bio">
+        Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
+      </p>
 
       <nav class="profile-tabs">
         <button class="profile-tab profile-tab--active" data-tab="tracks">
@@ -145,7 +146,10 @@
         </button>
       </nav>
 
-      <div id="profile-tab-tracks" class="profile-tab-content profile-tab-content--active">
+      <div
+        id="profile-tab-tracks"
+        class="profile-tab-content profile-tab-content--active"
+      >
         <div id="profile-tracks-grid" class="profile-grid"></div>
       </div>
 
@@ -158,8 +162,23 @@
           Здесь можно показать описание проекта, ссылки на соцсети и контакты для
           сотрудничества.
         </p>
+        <ul class="profile-contact-list">
+          <li>
+            <span class="profile-contact-label">Telegram:</span>
+            <span id="contact-telegram">@avzalov</span>
+          </li>
+          <li>
+            <span class="profile-contact-label">Email:</span>
+            <span id="contact-email">contact@example.com</span>
+          </li>
+          <li>
+            <span class="profile-contact-label">Instagram:</span>
+            <span id="contact-instagram">@avzalov_music</span>
+          </li>
+        </ul>
       </div>
     </section>
+
 
 
     <!-- ====== BOTTOM NAV ====== -->
@@ -186,6 +205,22 @@
 
   </div>
 
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-card">
+      <h2 class="auth-title">Вход по коду</h2>
+      <p class="auth-text">Введи код, который выдал админ проекта.</p>
+      <input
+        id="auth-code-input"
+        type="text"
+        class="auth-input"
+        placeholder="AVZA-1000"
+      />
+      <button id="auth-submit" class="auth-btn">Войти</button>
+      <div id="auth-error" class="auth-error"></div>
+    </div>
+  </div>
+
+
   <!-- данные с треками -->
   <script src="./js/tracks-data.js"></script>
   <!-- логика -->
@@ -193,5 +228,6 @@
   <script src="./js/chat.js"></script>
   <script src="./js/profile.js"></script>
   <script src="./js/app.js"></script>
+  <script src="./js/auth.js"></script>
 </body>
 </html>
