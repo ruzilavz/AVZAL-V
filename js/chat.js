@@ -3,9 +3,8 @@
 const chatMessagesEl = document.getElementById("chat-messages");
 const chatFormEl = document.getElementById("chat-form");
 const chatInputEl = document.getElementById("chat-input");
-const chatUsersEl = document.getElementById("chat-users");
 
-// пользователи (мини‑профили)
+// пользователи
 const chatUsers = [
   {
     id: "avzalov",
@@ -37,6 +36,7 @@ usersById["me"] = {
   name: "Вы",
   handle: "@you",
   color: "#96A3AB",
+  isFriend: true,
 };
 
 // сообщения
@@ -49,87 +49,74 @@ const chatState = [
   },
 ];
 
-function renderChatUsers() {
-  chatUsersEl.innerHTML = "";
-
-  chatUsers.forEach((u) => {
-    const card = document.createElement("div");
-    card.className = "chat-user-card";
-
-    const header = document.createElement("div");
-    header.className = "chat-user-card-header";
-
-    const avatar = document.createElement("div");
-    avatar.className = "chat-user-avatar";
-    avatar.style.backgroundImage =
-      "linear-gradient(135deg, " + u.color + ", #034153)";
-
-    const infoWrap = document.createElement("div");
-    const nameEl = document.createElement("div");
-    nameEl.className = "chat-user-name";
-    nameEl.textContent = u.name;
-    const handleEl = document.createElement("div");
-    handleEl.className = "chat-user-handle";
-    handleEl.textContent = u.handle;
-
-    infoWrap.appendChild(nameEl);
-    infoWrap.appendChild(handleEl);
-    header.appendChild(avatar);
-    header.appendChild(infoWrap);
-
-    const actions = document.createElement("div");
-    actions.className = "chat-user-actions";
-
-    // кнопка ЛС
-    const dmBtn = document.createElement("button");
-    dmBtn.className = "mini-btn mini-btn--primary";
-    dmBtn.textContent = "ЛС";
-    dmBtn.addEventListener("click", () => {
-      chatInputEl.value = `${u.handle} `;
-      chatInputEl.focus();
-    });
-
-    // кнопка Друзья
-    const friendBtn = document.createElement("button");
-    friendBtn.className = "mini-btn";
-    friendBtn.textContent = u.isFriend ? "В друзьях" : "Добавить";
-    friendBtn.addEventListener("click", () => {
-      u.isFriend = !u.isFriend;
-      friendBtn.textContent = u.isFriend ? "В друзьях" : "Добавить";
-    });
-
-    actions.appendChild(dmBtn);
-    actions.appendChild(friendBtn);
-
-    card.appendChild(header);
-    card.appendChild(actions);
-
-    chatUsersEl.appendChild(card);
-  });
-}
-
+// рендер всего диалога
 function renderChat() {
   chatMessagesEl.innerHTML = "";
+  let lastFrom = null;
 
   chatState.forEach((msg) => {
     const user = usersById[msg.from] || usersById["avzalov"];
 
+    // если сменился автор сообщения — рисуем микро‑профиль над его сообщением
+    if (msg.from !== lastFrom) {
+      const mini = document.createElement("div");
+      mini.className = "chat-mini-profile";
+
+      const left = document.createElement("div");
+      left.className = "chat-mini-left";
+
+      const avatar = document.createElement("div");
+      avatar.className = "chat-mini-avatar";
+      avatar.style.backgroundImage =
+        "linear-gradient(135deg, " + user.color + ", #034153)";
+
+      const textWrap = document.createElement("div");
+      const nameEl = document.createElement("div");
+      nameEl.className = "chat-mini-name";
+      nameEl.textContent = user.name;
+      const handleEl = document.createElement("div");
+      handleEl.className = "chat-mini-handle";
+      handleEl.textContent = user.handle;
+
+      textWrap.appendChild(nameEl);
+      textWrap.appendChild(handleEl);
+      left.appendChild(avatar);
+      left.appendChild(textWrap);
+
+      const actions = document.createElement("div");
+      actions.className = "chat-mini-actions";
+
+      // для других пользователей даём ЛС и Друзья
+      if (msg.from !== "me") {
+        const dmBtn = document.createElement("button");
+        dmBtn.className = "chat-mini-btn chat-mini-btn--primary";
+        dmBtn.textContent = "ЛС";
+        dmBtn.addEventListener("click", () => {
+          chatInputEl.value = `${user.handle} `;
+          chatInputEl.focus();
+        });
+
+        const friendBtn = document.createElement("button");
+        friendBtn.className = "chat-mini-btn";
+        friendBtn.textContent = user.isFriend ? "В друзьях" : "Добавить";
+        friendBtn.addEventListener("click", () => {
+          user.isFriend = !user.isFriend;
+          friendBtn.textContent = user.isFriend ? "В друзьях" : "Добавить";
+        });
+
+        actions.appendChild(dmBtn);
+        actions.appendChild(friendBtn);
+      }
+
+      mini.appendChild(left);
+      mini.appendChild(actions);
+      chatMessagesEl.appendChild(mini);
+    }
+
+    // сам пузырь сообщения
     const row = document.createElement("div");
     row.className =
-      "chat-row " +
-      (msg.from === "me" ? "chat-row--me" : "chat-row--other");
-
-    if (msg.from !== "me") {
-      const avatarBtn = document.createElement("button");
-      avatarBtn.className = "chat-avatar";
-      avatarBtn.style.backgroundImage =
-        "linear-gradient(135deg, " + user.color + ", #034153)";
-      row.appendChild(avatarBtn);
-    } else {
-      const spacer = document.createElement("div");
-      spacer.style.width = "28px";
-      row.appendChild(spacer);
-    }
+      "chat-row " + (msg.from === "me" ? "chat-row--me" : "chat-row--other");
 
     const bubble = document.createElement("div");
     bubble.className =
@@ -142,21 +129,21 @@ function renderChat() {
 
     row.appendChild(bubble);
     chatMessagesEl.appendChild(row);
+
+    lastFrom = msg.from;
   });
 
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
 
+// отправка сообщения
 chatFormEl.addEventListener("submit", (e) => {
   e.preventDefault();
   const text = chatInputEl.value.trim();
   if (!text) return;
 
   const now = new Date();
-  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(
-    2,
-    "0"
-  )}`;
+  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
 
   chatState.push({ from: "me", text, time });
   chatInputEl.value = "";
@@ -166,12 +153,12 @@ chatFormEl.addEventListener("submit", (e) => {
   setTimeout(() => {
     chatState.push({
       from: "avzalov",
-      text: "Спасибо за сообщение! Здесь скоро будет настоящий сервер 😊",
+      text: "Спасибо за сообщение! Скоро здесь будет настоящий сервер 😊",
       time,
     });
     renderChat();
   }, 600);
 });
 
-renderChatUsers();
+// стартовый рендер
 renderChat();

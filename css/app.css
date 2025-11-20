@@ -557,69 +557,55 @@ body {
 }
 
 
-/* мини‑профили в чате */
+/* мини‑профиль над сообщением */
 
-/* Лента мини‑профилей над чатом */
-
-.chat-users {
+.chat-mini-profile {
   display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 4px 0 10px;
-  margin-bottom: 6px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px;
+  margin: 6px 0 2px;
+  border-radius: 999px;
+  background: #11131a;
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.chat-user-card {
-  min-width: 120px;
-  padding: 6px 8px;
-  border-radius: 12px;
-  background: #15171d;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+.chat-mini-left {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
 }
 
-.chat-user-card-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chat-user-avatar {
-  width: 30px;
-  height: 30px;
+.chat-mini-avatar {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-size: cover;
   background-position: center;
-  flex-shrink: 0;
 }
 
-.chat-user-name {
-  font-size: 12px;
+.chat-mini-name {
+  font-size: 11px;
   font-weight: 500;
 }
 
-.chat-user-handle {
+.chat-mini-handle {
   font-size: 10px;
-  color: #8a8a8a;
+  color: #888;
 }
 
-.chat-user-actions {
+.chat-mini-actions {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
-/* мини‑кнопки ЛС / Друзья */
-
-.mini-btn {
-  flex: 1;
+.chat-mini-btn {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   background: rgba(0, 0, 0, 0.4);
   color: #ffffff;
   font-size: 10px;
-  padding: 4px 0;
+  padding: 3px 6px;
   cursor: pointer;
   transition:
     background 0.18s ease,
@@ -627,21 +613,21 @@ body {
     transform 0.1s ease;
 }
 
-.mini-btn:hover {
+.chat-mini-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.6);
 }
 
-.mini-btn:active {
+.chat-mini-btn:active {
   transform: scale(0.96);
 }
 
-.mini-btn--primary {
+.chat-mini-btn--primary {
   background: #056174;
   border-color: #056174;
 }
 
-.mini-btn--primary:hover {
+.chat-mini-btn--primary:hover {
   background: #078199;
   border-color: #078199;
 }
@@ -684,12 +670,4 @@ body {
 .chat-bubble--other {
   align-self: flex-start;
   background: #262a31;
-}
-
-.chat-time {
-  display: block;
-  margin-top: 2px;
-  font-size: 10px;
-  opacity: 0.7;
-  text-align: right;
 }

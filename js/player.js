@@ -41,7 +41,7 @@ function getTrackCoverUrl(track) {
 
 function getTrackAudioUrl(track) {
   const ext = track.audioExt || ".mp3";
-  return `./audio/${track.slug}${ext}`;
+  return `audio/${track.slug}${ext}`;
 }
 
 function loadTrack(index) {
