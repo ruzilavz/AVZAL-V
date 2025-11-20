@@ -142,14 +142,13 @@ async function sendToBot() {
     body: JSON.stringify({ messages: messagesForApi }),
   });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`HTTP ${res.status}: ${text}`);
-  }
-
-  const data = await res.json();
-  if (!data.ok) {
-    throw new Error(data.error || "Ошибка бота");
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data?.ok) {
+    const err = new Error(
+      `HTTP ${res.status}: ${data?.error || "Ошибка бота"}`
+    );
+    err.fallback = data?.fallback;
+    throw err;
   }
 
   return data.answer;
@@ -184,7 +183,7 @@ chatFormEl.addEventListener("submit", async (e) => {
     console.error("Ошибка ИИ‑бота:", err);
     chatState.push({
       from: "bot",
-      text: buildFallbackReply(text),
+      text: err.fallback || buildFallbackReply(text),
       time: getTime(),
     });
     renderChat();
