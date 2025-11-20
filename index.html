@@ -79,66 +79,91 @@
         <div class="chat-user">
           <div class="avatar-sm"></div>
           <div>
-            <div class="chat-username">AVZALØV Chat</div>
-            <div class="chat-status">online</div>
+            <div class="chat-username">AVZALØV чат</div>
+            <div class="chat-status">онлайн</div>
           </div>
         </div>
-        <button class="icon-btn">⋮</button>
-      </header>
+      <button class="icon-btn">⋮</button>
+    </header>
 
-      <!-- НОВОЕ: список мини‑профилей -->
-      <div id="chat-users" class="chat-users"></div>
+    <!-- МИКРО‑ПРОФИЛИ НАД СООБЩЕНИЯМИ -->
+    <div id="chat-users" class="chat-users"></div>
 
-      <div id="chat-messages" class="chat-messages"></div>
+    <!-- СООБЩЕНИЯ -->
+    <div id="chat-messages" class="chat-messages"></div>
 
-      <form id="chat-form" class="chat-input-row">
-        <input
-          id="chat-input"
-          type="text"
-          placeholder="Сообщение..."
-          autocomplete="off"
-        />
-        <button type="submit" class="chat-send-btn">➤</button>
-      </form>
-    </section>
+    <!-- ВВОД СООБЩЕНИЯ -->
+    <form id="chat-form" class="chat-input-row">
+      <input
+        id="chat-input"
+        type="text"
+        placeholder="Сообщение..."
+        autocomplete="off"
+      />
+      <button type="submit" class="chat-send-btn">Отпр.</button>
+    </form>
+   </section>
+
 
 
     <!-- ====== PROFILE SCREEN ====== -->
     <section id="screen-profile" class="screen">
       <header class="profile-header">
         <div class="profile-avatar"></div>
+
         <div class="profile-stats">
           <div class="profile-stat">
             <span class="profile-stat-number" id="profile-tracks-count">0</span>
-            <span class="profile-stat-label">Tracks</span>
+            <span class="profile-stat-label">Треки</span>
           </div>
           <div class="profile-stat">
-            <span class="profile-stat-number">40.8M</span>
-            <span class="profile-stat-label">Followers</span>
+            <span class="profile-stat-number" id="profile-followers-count">40.8M</span>
+            <span class="profile-stat-label">Подписчики</span>
           </div>
           <div class="profile-stat">
-            <span class="profile-stat-number">0</span>
-            <span class="profile-stat-label">Following</span>
+            <span class="profile-stat-number" id="profile-following-count">0</span>
+            <span class="profile-stat-label">Подписки</span>
           </div>
         </div>
-        <button class="profile-btn">Edit profile</button>
+
+        <button id="profile-edit-btn" class="profile-btn">
+          Редактировать профиль
+        </button>
       </header>
 
       <div class="profile-username">@avzalov</div>
-      <p class="profile-bio">
-        Official profile of AVZALØV. Music, releases, early access.
-      </p>
+        <p id="profile-bio" class="profile-bio">
+          Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
+        </p>
 
       <nav class="profile-tabs">
-        <button class="profile-tab profile-tab--active">Tracks</button>
-        <button class="profile-tab">Liked</button>
-        <button class="profile-tab">About</button>
+        <button class="profile-tab profile-tab--active" data-tab="tracks">
+          Треки
+        </button>
+        <button class="profile-tab" data-tab="liked">
+          Избранное
+        </button>
+        <button class="profile-tab" data-tab="about">
+          О профиле
+        </button>
       </nav>
 
-      <div id="profile-tracks-grid" class="profile-grid">
-        <!-- карточки треков из tracks-data.js -->
+      <div id="profile-tab-tracks" class="profile-tab-content profile-tab-content--active">
+        <div id="profile-tracks-grid" class="profile-grid"></div>
+      </div>
+
+      <div id="profile-tab-liked" class="profile-tab-content">
+        <p class="profile-empty-text">Пока нет избранных треков.</p>
+      </div>
+
+      <div id="profile-tab-about" class="profile-tab-content">
+        <p class="profile-about-text">
+          Здесь можно показать описание проекта, ссылки на соцсети и контакты для
+          сотрудничества.
+        </p>
       </div>
     </section>
+
 
     <!-- ====== BOTTOM NAV ====== -->
     <nav class="bottom-nav">

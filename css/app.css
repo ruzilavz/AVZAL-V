@@ -372,19 +372,22 @@ body {
   background: transparent;
   color: #fff;
   font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.1s ease;
 }
 
-.profile-username {
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 4px;
+.profile-btn:hover {
+  background: #ffffff;
+  color: #000;
+  border-color: #ffffff;
 }
 
-.profile-bio {
-  text-align: center;
-  font-size: 12px;
-  color: #b0b0b0;
-  margin-top: 0;
+.profile-btn:active {
+  transform: scale(0.97);
 }
 
 .profile-tabs {
@@ -401,12 +404,33 @@ body {
   background: transparent;
   color: #777;
   font-size: 13px;
+  cursor: pointer;
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .profile-tab--active {
   color: #fff;
   border-bottom: 2px solid #fff;
 }
+
+.profile-tab-content {
+  display: none;
+}
+
+.profile-tab-content--active {
+  display: block;
+}
+
+.profile-empty-text,
+.profile-about-text {
+  font-size: 13px;
+  color: #b0b0b0;
+  padding-top: 8px;
+  text-align: center;
+}
+
 
 .profile-grid {
   display: grid;
@@ -535,17 +559,19 @@ body {
 
 /* мини‑профили в чате */
 
+/* Лента мини‑профилей над чатом */
+
 .chat-users {
   display: flex;
   gap: 10px;
   overflow-x: auto;
-  padding: 6px 0 10px;
-  margin-bottom: 4px;
+  padding: 4px 0 10px;
+  margin-bottom: 6px;
 }
 
 .chat-user-card {
   min-width: 120px;
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-radius: 12px;
   background: #15171d;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -564,7 +590,8 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #76aabf, #034153);
+  background-size: cover;
+  background-position: center;
   flex-shrink: 0;
 }
 
@@ -583,19 +610,21 @@ body {
   gap: 6px;
 }
 
+/* мини‑кнопки ЛС / Друзья */
+
 .mini-btn {
   flex: 1;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   background: rgba(0, 0, 0, 0.4);
   color: #ffffff;
   font-size: 10px;
   padding: 4px 0;
   cursor: pointer;
   transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.12s ease;
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.1s ease;
 }
 
 .mini-btn:hover {
@@ -604,7 +633,7 @@ body {
 }
 
 .mini-btn:active {
-  transform: translateY(1px) scale(0.96);
+  transform: scale(0.96);
 }
 
 .mini-btn--primary {
@@ -615,4 +644,52 @@ body {
 .mini-btn--primary:hover {
   background: #078199;
   border-color: #078199;
+}
+
+/* строки чата + аватар у собеседника */
+
+.chat-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.chat-row--me {
+  justify-content: flex-end;
+}
+
+.chat-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 8px 10px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.chat-bubble--me {
+  align-self: flex-end;
+  background: #056174;
+}
+
+.chat-bubble--other {
+  align-self: flex-start;
+  background: #262a31;
+}
+
+.chat-time {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  opacity: 0.7;
+  text-align: right;
 }

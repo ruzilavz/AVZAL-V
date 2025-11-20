@@ -5,28 +5,24 @@ const chatFormEl = document.getElementById("chat-form");
 const chatInputEl = document.getElementById("chat-input");
 const chatUsersEl = document.getElementById("chat-users");
 
-const chatState = [
-  { from: "other", text: "Привет! Это чат AVZALØV.", time: "10:00" },
-  { from: "me", text: "Залетаю послушать новые треки 🔥", time: "10:01" },
-];
-
+// пользователи (мини‑профили)
 const chatUsers = [
   {
-    id: 1,
+    id: "avzalov",
     name: "AVZALØV",
     handle: "@avzalov",
     color: "#76AABF",
     isFriend: true,
   },
   {
-    id: 2,
-    name: "Новый слушатель",
-    handle: "@newlistener",
+    id: "listener",
+    name: "Слушатель",
+    handle: "@listener",
     color: "#678391",
     isFriend: false,
   },
   {
-    id: 3,
+    id: "producer",
     name: "Продюсер",
     handle: "@producer",
     color: "#056174",
@@ -34,21 +30,24 @@ const chatUsers = [
   },
 ];
 
-function renderChat() {
-  chatMessagesEl.innerHTML = "";
-  chatState.forEach((msg) => {
-    const div = document.createElement("div");
-    div.className =
-      "chat-bubble " +
-      (msg.from === "me" ? "chat-bubble--me" : "chat-bubble--other");
-    div.innerHTML = `
-      <span>${msg.text}</span>
-      <span class="chat-time">${msg.time}</span>
-    `;
-    chatMessagesEl.appendChild(div);
-  });
-  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
-}
+const usersById = {};
+chatUsers.forEach((u) => (usersById[u.id] = u));
+usersById["me"] = {
+  id: "me",
+  name: "Вы",
+  handle: "@you",
+  color: "#96A3AB",
+};
+
+// сообщения
+const chatState = [
+  { from: "avzalov", text: "Привет! Это чат AVZALØV.", time: "10:00" },
+  {
+    from: "me",
+    text: "Залетаю послушать новые треки 🔥",
+    time: "10:01",
+  },
+];
 
 function renderChatUsers() {
   chatUsersEl.innerHTML = "";
@@ -62,38 +61,38 @@ function renderChatUsers() {
 
     const avatar = document.createElement("div");
     avatar.className = "chat-user-avatar";
-    avatar.style.background = `radial-gradient(circle at 30% 30%, ${u.color}, #034153)`;
+    avatar.style.backgroundImage =
+      "linear-gradient(135deg, " + u.color + ", #034153)";
 
-    const nameWrap = document.createElement("div");
+    const infoWrap = document.createElement("div");
     const nameEl = document.createElement("div");
     nameEl.className = "chat-user-name";
     nameEl.textContent = u.name;
-
     const handleEl = document.createElement("div");
     handleEl.className = "chat-user-handle";
     handleEl.textContent = u.handle;
 
-    nameWrap.appendChild(nameEl);
-    nameWrap.appendChild(handleEl);
-
+    infoWrap.appendChild(nameEl);
+    infoWrap.appendChild(handleEl);
     header.appendChild(avatar);
-    header.appendChild(nameWrap);
+    header.appendChild(infoWrap);
 
     const actions = document.createElement("div");
     actions.className = "chat-user-actions";
 
+    // кнопка ЛС
     const dmBtn = document.createElement("button");
     dmBtn.className = "mini-btn mini-btn--primary";
     dmBtn.textContent = "ЛС";
-
     dmBtn.addEventListener("click", () => {
-      startDirectMessage(u);
+      chatInputEl.value = `${u.handle} `;
+      chatInputEl.focus();
     });
 
+    // кнопка Друзья
     const friendBtn = document.createElement("button");
     friendBtn.className = "mini-btn";
     friendBtn.textContent = u.isFriend ? "В друзьях" : "Добавить";
-
     friendBtn.addEventListener("click", () => {
       u.isFriend = !u.isFriend;
       friendBtn.textContent = u.isFriend ? "В друзьях" : "Добавить";
@@ -109,10 +108,43 @@ function renderChatUsers() {
   });
 }
 
-function startDirectMessage(user) {
-  // вставляем @ник и фокусируемся на инпут
-  chatInputEl.value = `${user.handle} `;
-  chatInputEl.focus();
+function renderChat() {
+  chatMessagesEl.innerHTML = "";
+
+  chatState.forEach((msg) => {
+    const user = usersById[msg.from] || usersById["avzalov"];
+
+    const row = document.createElement("div");
+    row.className =
+      "chat-row " +
+      (msg.from === "me" ? "chat-row--me" : "chat-row--other");
+
+    if (msg.from !== "me") {
+      const avatarBtn = document.createElement("button");
+      avatarBtn.className = "chat-avatar";
+      avatarBtn.style.backgroundImage =
+        "linear-gradient(135deg, " + user.color + ", #034153)";
+      row.appendChild(avatarBtn);
+    } else {
+      const spacer = document.createElement("div");
+      spacer.style.width = "28px";
+      row.appendChild(spacer);
+    }
+
+    const bubble = document.createElement("div");
+    bubble.className =
+      "chat-bubble " +
+      (msg.from === "me" ? "chat-bubble--me" : "chat-bubble--other");
+    bubble.innerHTML = `
+      <span>${msg.text}</span>
+      <span class="chat-time">${msg.time}</span>
+    `;
+
+    row.appendChild(bubble);
+    chatMessagesEl.appendChild(row);
+  });
+
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
 
 chatFormEl.addEventListener("submit", (e) => {
@@ -121,23 +153,25 @@ chatFormEl.addEventListener("submit", (e) => {
   if (!text) return;
 
   const now = new Date();
-  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
+  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(
+    2,
+    "0"
+  )}`;
 
   chatState.push({ from: "me", text, time });
   chatInputEl.value = "";
   renderChat();
 
-  // демо-ответ
+  // демо‑ответ
   setTimeout(() => {
     chatState.push({
-      from: "other",
-      text: "Спасибо за сообщение! Здесь скоро будет живой сервер 😊",
+      from: "avzalov",
+      text: "Спасибо за сообщение! Здесь скоро будет настоящий сервер 😊",
       time,
     });
     renderChat();
   }, 600);
 });
 
-// начальный рендер
 renderChatUsers();
 renderChat();
