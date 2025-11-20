@@ -24,5 +24,13 @@ navButtons.forEach((btn) => {
   });
 });
 
+window.addEventListener("load", () => {
+  const scr = document.getElementById("loading-screen");
+  scr.style.opacity = "0";
+  setTimeout(() => scr.remove(), 300);
+});
+
+
 // делаем функцию глобальной, чтобы profile.js мог её звать
 window.switchScreen = switchScreen;
+
