@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>AVZALØV – Player & Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ====== PLAYER SCREEN ====== -->
+    <section id="screen-player" class="screen screen--active">
+      <div class="player-bg" id="player-bg"></div>
+
+      <div class="player-overlay">
+        <header class="player-header">
+          <div class="player-title-group">
+            <h1 id="player-track-title">Название трека</h1>
+            <p id="player-track-artist">AVZALØV</p>
+          </div>
+          <button id="player-like-btn" class="icon-btn">
+            ♥
+          </button>
+        </header>
+
+        <div class="player-cover-wrapper">
+          <div class="player-cover-border">
+            <img id="player-cover" src="" alt="cover" />
+          </div>
+        </div>
+
+        <div class="player-timeline">
+          <span id="player-current-time" class="time-text">0:00</span>
+          <input id="player-seek" type="range" min="0" max="100" value="0" />
+          <span id="player-duration" class="time-text">0:00</span>
+        </div>
+
+        <div class="player-controls">
+          <button id="btn-shuffle" class="icon-btn">🔀</button>
+          <button id="btn-prev" class="icon-btn">⏮</button>
+          <button id="btn-play" class="player-play-main">▶</button>
+          <button id="btn-next" class="icon-btn">⏭</button>
+          <button id="btn-repeat" class="icon-btn">🔁</button>
+        </div>
+
+        <div class="player-extra">
+          <button class="icon-btn">📶</button>
+          <button class="icon-btn">≡</button>
+        </div>
+      </div>
+
+      <audio id="audio"></audio>
+    </section>
+
+    <!-- ====== CHAT SCREEN ====== -->
+    <section id="screen-chat" class="screen">
+      <header class="chat-header">
+        <div class="chat-user">
+          <div class="avatar-sm"></div>
+          <div>
+            <div class="chat-username">AVZALØV Chat</div>
+            <div class="chat-status">online</div>
+          </div>
+        </div>
+        <button class="icon-btn">⋮</button>
+      </header>
+
+      <div id="chat-messages" class="chat-messages">
+        <!-- сообщения будут рендериться JS -->
+      </div>
+
+      <form id="chat-form" class="chat-input-row">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Сообщение..."
+          autocomplete="off"
+        />
+        <button type="submit" class="chat-send-btn">➤</button>
+      </form>
+    </section>
+
+    <!-- ====== PROFILE SCREEN ====== -->
+    <section id="screen-profile" class="screen">
+      <header class="profile-header">
+        <div class="profile-avatar"></div>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="profile-tracks-count">0</span>
+            <span class="profile-stat-label">Tracks</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number">40.8M</span>
+            <span class="profile-stat-label">Followers</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number">0</span>
+            <span class="profile-stat-label">Following</span>
+          </div>
+        </div>
+        <button class="profile-btn">Edit profile</button>
+      </header>
+
+      <div class="profile-username">@avzalov</div>
+      <p class="profile-bio">
+        Official profile of AVZALØV. Music, releases, early access.
+      </p>
+
+      <nav class="profile-tabs">
+        <button class="profile-tab profile-tab--active">Tracks</button>
+        <button class="profile-tab">Liked</button>
+        <button class="profile-tab">About</button>
+      </nav>
+
+      <div id="profile-tracks-grid" class="profile-grid">
+        <!-- карточки треков из tracks-data.js -->
+      </div>
+    </section>
+
+    <!-- ====== BOTTOM NAV ====== -->
+    <nav class="bottom-nav">
+      <button data-screen="screen-player" class="bottom-nav-btn bottom-nav-btn--active">▶</button>
+      <button data-screen="screen-chat" class="bottom-nav-btn">💬</button>
+      <button data-screen="screen-profile" class="bottom-nav-btn">👤</button>
+    </nav>
+
+  </div>
+
+  <!-- данные с треками -->
+  <script src="./js/tracks-data.js"></script>
+  <!-- логика -->
+  <script src="./js/player.js"></script>
+  <script src="./js/chat.js"></script>
+  <script src="./js/profile.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
