@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>AVZALØV – Player & Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ====== PLAYER SCREEN ====== -->
+    <section id="screen-player" class="screen screen--active">
+      <div class="player-bg" id="player-bg"></div>
+
+      <div class="player-overlay">
+        <header class="player-header">
+          <div class="player-title-group">
+            <h1 id="player-track-title">Название трека</h1>
+            <p id="player-track-artist">AVZALØV</p>
+          </div>
+          <button id="player-like-btn" class="icon-btn">
+            ♥
+          </button>
+        </header>
+
+        <div class="player-cover-wrapper">
+          <div class="player-cover-border">
+            <img id="player-cover" src="" alt="cover" />
+          </div>
+        </div>
+
+        <div class="player-timeline">
+          <span id="player-current-time" class="time-text">0:00</span>
+          <input id="player-seek" type="range" min="0" max="100" value="0" />
+          <span id="player-duration" class="time-text">0:00</span>
+        </div>
+
+        <div class="player-controls">
+          <button id="btn-shuffle" class="control-btn" aria-label="Случайный порядок">
+            МИКС
+          </button>
+
+          <button id="btn-prev" class="control-btn" aria-label="Предыдущий трек">
+            НАЗАД
+          </button>
+
+          <!-- главная круглая кнопка play/pause без текста -->
+          <button
+            id="btn-play"
+            class="player-play-main"
+            data-state="play"
+            aria-label="Воспроизведение / пауза" 
+          ></button>
+
+          <button id="btn-next" class="control-btn" aria-label="Следующий трек">
+            ВПЕРЁД
+          </button>
+
+          <button id="btn-repeat" class="control-btn" aria-label="Повтор трека">
+            ПОВТОР
+          </button>
+        </div>
+
+
+        <div class="player-extra">
+          <button class="icon-btn">📶</button>
+          <button class="icon-btn">≡</button>
+        </div>
+      </div>
+
+      <audio id="audio"></audio>
+    </section>
+
+    <!-- ====== CHAT SCREEN ====== -->
+    <section id="screen-chat" class="screen">
+      <header class="chat-header">
+        <div class="chat-user">
+          <div class="avatar-sm"></div>
+          <div>
+            <div class="chat-username">AVZALØV чат</div>
+            <div class="chat-status">онлайн</div>
+          </div>
+        </div>
+        <button class="icon-btn">⋮</button>
+      </header>
+
+      <div id="loading-screen">
+        <img src="loading.gif" alt="loading">
+      </div>
+
+      <div id="loading-screen">
+        <video autoplay muted playsinline id="loading-video">
+          <source src="loading.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <video id="app-bg" autoplay loop muted playsinline>
+        <source src="bg.mp4" type="video/mp4">
+      </video>
+      <div id="app">…контент…</div>
+
+      <!-- Только сообщения -->
+      <div id="chat-messages" class="chat-messages"></div>
+
+      <form id="chat-form" class="chat-input-row">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Сообщение..."
+          autocomplete="off"
+        />
+        <button type="submit" class="chat-send-btn">Отпр.</button>
+      </form>
+    </section>
+
+
+
+
+    <!-- ====== PROFILE SCREEN ====== -->
+    <section id="screen-profile" class="screen">
+      <header class="profile-header">
+        <div class="profile-avatar"></div>
+
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="profile-tracks-count">0</span>
+            <span class="profile-stat-label">Треки</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="profile-followers-count">40.8M</span>
+            <span class="profile-stat-label">Подписчики</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="profile-following-count">0</span>
+            <span class="profile-stat-label">Подписки</span>
+          </div>
+        </div>
+
+        <button id="profile-edit-btn" class="profile-btn">
+          Редактировать профиль
+        </button>
+      </header>
+
+      <div class="profile-username">@avzalov</div>
+      <div id="profile-role" class="profile-role">Роль: гость</div>
+      <p id="profile-bio" class="profile-bio">
+        Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
+      </p>
+
+      <nav class="profile-tabs">
+        <button class="profile-tab profile-tab--active" data-tab="tracks">
+          Треки
+        </button>
+        <button class="profile-tab" data-tab="liked">
+          Избранное
+        </button>
+        <button class="profile-tab" data-tab="about">
+          О профиле
+        </button>
+      </nav>
+
+      <div
+        id="profile-tab-tracks"
+        class="profile-tab-content profile-tab-content--active"
+      >
+        <div id="profile-tracks-grid" class="profile-grid"></div>
+      </div>
+
+      <div id="profile-tab-liked" class="profile-tab-content">
+        <p class="profile-empty-text">Пока нет избранных треков.</p>
+      </div>
+
+      <div id="profile-tab-about" class="profile-tab-content">
+        <p class="profile-about-text">
+          Здесь можно показать описание проекта, ссылки на соцсети и контакты для
+          сотрудничества.
+        </p>
+        <ul class="profile-contact-list">
+          <li>
+            <span class="profile-contact-label">Telegram:</span>
+            <span id="contact-telegram">@avzalov</span>
+          </li>
+          <li>
+            <span class="profile-contact-label">Email:</span>
+            <span id="contact-email">contact@example.com</span>
+          </li>
+          <li>
+            <span class="profile-contact-label">Instagram:</span>
+            <span id="contact-instagram">@avzalov_music</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+
+    <!-- ====== BOTTOM NAV ====== -->
+    <nav class="bottom-nav">
+      <button
+        data-screen="screen-player"
+        class="bottom-nav-btn bottom-nav-btn--active"
+      >
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Плеер</span>
+      </button>
+
+      <button data-screen="screen-chat" class="bottom-nav-btn">
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Чат</span>
+      </button>
+
+      <button data-screen="screen-profile" class="bottom-nav-btn">
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Профиль</span>
+        </button>
+      </nav>
+
+
+  </div>
+
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-card">
+      <h2 class="auth-title">Вход по коду</h2>
+      <p class="auth-text">Введи код, который выдал админ проекта.</p>
+      <input
+        id="auth-code-input"
+        type="text"
+        class="auth-input"
+        placeholder="AVZA-1000"
+      />
+      <button id="auth-submit" class="auth-btn">Войти</button>
+      <div id="auth-error" class="auth-error"></div>
+    </div>
+  </div>
+
+
+  <!-- данные с треками -->
+  <script src="./js/tracks-data.js"></script>
+  <!-- логика -->
+  <script src="./js/player.js"></script>
+  <script src="./js/chat.js"></script>
+  <script src="./js/profile.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/auth.js"></script>
+</body>
+</html>
