@@ -66,13 +66,17 @@ function loadTrack(index) {
   timeDurationEl.textContent = "0:00";
 }
 
+function updatePlayButton() {
+  btnPlay.dataset.state = isPlaying ? "pause" : "play";
+}
+
 function play() {
   if (!audioEl.src) return;
   audioEl
     .play()
     .then(() => {
       isPlaying = true;
-      btnPlay.textContent = "⏸";
+      updatePlayButton();
     })
     .catch(console.error);
 }
@@ -80,13 +84,15 @@ function play() {
 function pause() {
   audioEl.pause();
   isPlaying = false;
-  btnPlay.textContent = "▶";
+  updatePlayButton();
 }
 
 function togglePlay() {
   if (isPlaying) pause();
   else play();
 }
+
+btnPlay.dataset.state = "play";
 
 function nextTrack() {
   if (isShuffle) {

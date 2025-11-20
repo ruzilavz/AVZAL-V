@@ -52,7 +52,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 56px;
+  height: 60px;
   background: rgba(5, 5, 9, 0.98);
   display: flex;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -62,13 +62,52 @@ body {
   flex: 1;
   border: none;
   background: transparent;
-  color: #777;
-  font-size: 22px;
+  color: #8a8a8a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.12s ease;
+}
+
+.bottom-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bottom-nav-btn:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.bottom-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .bottom-nav-btn--active {
-  color: #fff;
+  color: #ffffff;
 }
+
+.bottom-nav-btn--active .bottom-nav-dot {
+  background: #ffffff;
+  border-color: #ffffff;
+  transform: scale(1.2);
+}
+
 
 /* ===== PLAYER ===== */
 
@@ -398,4 +437,182 @@ body {
     rgba(0, 0, 0, 0.1)
   );
   padding: 2px 3px;
+}
+
+/* --- Кнопки управления плеером --- */
+
+.control-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  min-width: 60px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+.control-btn:active {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* круглая кнопка Play/Pause рисуем чисто CSS */
+
+.player-play-main {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.player-play-main:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8);
+}
+
+.player-play-main:active {
+  transform: translateY(1px) scale(0.95);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.player-play-main::before,
+.player-play-main::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+/* состояние "play" — треугольник */
+
+.player-play-main[data-state="play"]::before {
+  transform: translate(-40%, -50%);
+  border-style: solid;
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent #000000;
+}
+
+/* состояние "pause" — две вертикальные палки */
+
+.player-play-main[data-state="pause"]::before,
+.player-play-main[data-state="pause"]::after {
+  width: 5px;
+  height: 20px;
+  background: #000000;
+  border-radius: 999px;
+}
+
+.player-play-main[data-state="pause"]::before {
+  transform: translate(-7px, -50%);
+}
+
+.player-play-main[data-state="pause"]::after {
+  transform: translate(2px, -50%);
+}
+
+
+/* мини‑профили в чате */
+
+.chat-users {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 6px 0 10px;
+  margin-bottom: 4px;
+}
+
+.chat-user-card {
+  min-width: 120px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #15171d;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chat-user-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #76aabf, #034153);
+  flex-shrink: 0;
+}
+
+.chat-user-name {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chat-user-handle {
+  font-size: 10px;
+  color: #8a8a8a;
+}
+
+.chat-user-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.mini-btn {
+  flex: 1;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  font-size: 10px;
+  padding: 4px 0;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.12s ease;
+}
+
+.mini-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.mini-btn:active {
+  transform: translateY(1px) scale(0.96);
+}
+
+.mini-btn--primary {
+  background: #056174;
+  border-color: #056174;
+}
+
+.mini-btn--primary:hover {
+  background: #078199;
+  border-color: #078199;
 }

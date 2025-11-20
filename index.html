@@ -38,12 +38,31 @@
         </div>
 
         <div class="player-controls">
-          <button id="btn-shuffle" class="icon-btn">🔀</button>
-          <button id="btn-prev" class="icon-btn">⏮</button>
-          <button id="btn-play" class="player-play-main">▶</button>
-          <button id="btn-next" class="icon-btn">⏭</button>
-          <button id="btn-repeat" class="icon-btn">🔁</button>
+          <button id="btn-shuffle" class="control-btn" aria-label="Случайный порядок">
+            МИКС
+          </button>
+
+          <button id="btn-prev" class="control-btn" aria-label="Предыдущий трек">
+            НАЗАД
+          </button>
+
+          <!-- главная круглая кнопка play/pause без текста -->
+          <button
+            id="btn-play"
+            class="player-play-main"
+            data-state="play"
+            aria-label="Воспроизведение / пауза" 
+          ></button>
+
+          <button id="btn-next" class="control-btn" aria-label="Следующий трек">
+            ВПЕРЁД
+          </button>
+
+          <button id="btn-repeat" class="control-btn" aria-label="Повтор трека">
+            ПОВТОР
+          </button>
         </div>
+
 
         <div class="player-extra">
           <button class="icon-btn">📶</button>
@@ -67,9 +86,10 @@
         <button class="icon-btn">⋮</button>
       </header>
 
-      <div id="chat-messages" class="chat-messages">
-        <!-- сообщения будут рендериться JS -->
-      </div>
+      <!-- НОВОЕ: список мини‑профилей -->
+      <div id="chat-users" class="chat-users"></div>
+
+      <div id="chat-messages" class="chat-messages"></div>
 
       <form id="chat-form" class="chat-input-row">
         <input
@@ -81,6 +101,7 @@
         <button type="submit" class="chat-send-btn">➤</button>
       </form>
     </section>
+
 
     <!-- ====== PROFILE SCREEN ====== -->
     <section id="screen-profile" class="screen">
@@ -121,10 +142,25 @@
 
     <!-- ====== BOTTOM NAV ====== -->
     <nav class="bottom-nav">
-      <button data-screen="screen-player" class="bottom-nav-btn bottom-nav-btn--active">▶</button>
-      <button data-screen="screen-chat" class="bottom-nav-btn">💬</button>
-      <button data-screen="screen-profile" class="bottom-nav-btn">👤</button>
-    </nav>
+      <button
+        data-screen="screen-player"
+        class="bottom-nav-btn bottom-nav-btn--active"
+      >
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Плеер</span>
+      </button>
+
+      <button data-screen="screen-chat" class="bottom-nav-btn">
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Чат</span>
+      </button>
+
+      <button data-screen="screen-profile" class="bottom-nav-btn">
+        <span class="bottom-nav-dot"></span>
+        <span class="bottom-nav-label">Профиль</span>
+        </button>
+      </nav>
+
 
   </div>
 
