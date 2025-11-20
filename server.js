@@ -2,13 +2,19 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+
+const chatRouter = require("./routes/chat");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ====== MIDDLEWARE (общие настройки) ======
-app.use(cors());           // чтобы фронт мог стучаться к серверу
-app.use(express.json());   // <-- ВАЖНО: парсинг JSON из req.body
+// ====== MIDDLEWARE ======
+app.use(cors());
+app.use(express.json());
+
+// раздаём фронтенд (index.html, css, js) из корня проекта
+app.use(express.static(path.join(__dirname)));
 
 // ====== 50 РОЛЕЙ И 50 КОДОВ ======
 
@@ -31,15 +37,14 @@ BASE_ROLES.forEach((role, idx) => {
   for (let i = 1; i <= 5; i++) {
     const code = `AVZ-${String(idx + 1).padStart(2, "0")}-${String(
       i
-    ).padStart(2, "0")}`; // например AVZ-01-01
+    ).padStart(2, "0")}`; // AVZ-01-01, AVZ-01-02...
     ACCESS_CODES.push({ code, role, used: false });
   }
 });
 
-// ====== МАРШРУТ ЛОГИНА ПО КОДУ ======
+// ====== ЛОГИН ПО КОДУ ======
 
 app.post("/api/login", (req, res) => {
-  // благодаря app.use(express.json()) здесь есть req.body
   const { code } = req.body || {};
 
   if (!code) {
@@ -53,7 +58,7 @@ app.post("/api/login", (req, res) => {
     return res.status(401).json({ ok: false, error: "Неверный код" });
   }
 
-  // если хочешь одноразовые коды — раскомментируй:
+  // если хочешь одноразовые коды – можно включить:
   // if (record.used) {
   //   return res.status(403).json({ ok: false, error: "Код уже использован" });
   // }
@@ -66,10 +71,13 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-// Простейший тестовый маршрут
+// Тестовый маршрут
 app.get("/api/ping", (req, res) => {
   res.json({ ok: true, message: "server is alive" });
 });
+
+// ====== ИИ‑ЧАТ ======
+app.use("/chat", chatRouter);
 
 // ====== ЗАПУСК СЕРВЕРА ======
 app.listen(PORT, () => {
