@@ -108,6 +108,11 @@ function getCoverUrl(track) {
   return `covers/${track.slug}${ext}`; // или похожий путь
 }
 
+function getAudioUrl(track) {
+  const ext = track.audioExt || ".mp3";
+  return `audio/${track.slug}${ext}`;
+}
+
 // EVENTS
 
 audioEl.addEventListener("loadedmetadata", () => {
