@@ -26,8 +26,7 @@ navButtons.forEach((btn) => {
 
 window.addEventListener("load", () => {
   const scr = document.getElementById("loading-screen");
-  scr.style.opacity = "0";
-  setTimeout(() => scr.remove(), 300);
+  scr.classList.add("hide");
 });
 
 
