@@ -103,6 +103,11 @@ function prevTrack() {
   play();
 }
 
+function getCoverUrl(track) {
+  const ext = track.coverExt || ".jpg";
+  return `covers/${track.slug}${ext}`; // или похожий путь
+}
+
 // EVENTS
 
 audioEl.addEventListener("loadedmetadata", () => {
