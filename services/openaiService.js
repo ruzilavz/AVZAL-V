@@ -1,9 +1,6 @@
 // services/openaiService.js
 const OpenAI = require("openai");
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let client;
 
 /**
  * messages — массив вида:
@@ -12,6 +9,12 @@ const client = new OpenAI({
 async function askOpenAI(messages) {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error("OPENAI_API_KEY не задан в .env");
+  }
+
+  if (!client) {
+    client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
   }
 
   const systemMessage = {
