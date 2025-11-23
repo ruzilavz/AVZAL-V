@@ -1,284 +1,89 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>AVZALØV – Player & Chat</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./css/app.css" />
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AVZALØV | Official Artist Site</title>
+    <meta name="description" content="Musician, Producer, Developer. The official dark-web portal of AVZALØV." />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#0b0d12',
+              primary: '#00f0ff', // Cyberpunk Cyan
+              secondary: '#7000ff', // Electric Violet
+              surface: '#12141a',
+              text: '#e0e0e0'
+            },
+            fontFamily: {
+              display: ['Orbitron', 'sans-serif'],
+              body: ['Rajdhani', 'sans-serif'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'glitch': 'glitch 1s linear infinite',
+            },
+            keyframes: {
+              glitch: {
+                '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                '62%': { transform: 'translate(0,0) skew(5deg)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0b0d12;
+        color: #e0e0e0;
+        cursor: none; /* Custom cursor implementation */
+        overflow-x: hidden;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0b0d12; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1f222b; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #00f0ff; 
+      }
+      
+      .neon-text {
+        text-shadow: 0 0 5px rgba(0, 240, 255, 0.7), 0 0 10px rgba(0, 240, 255, 0.5);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6"
+  }
+}
+</script>
 </head>
-<body>
-
-  <div id="app">
-
-    <!-- ====== PLAYER SCREEN ====== -->
-    <section id="screen-player" class="screen screen--active">
-      <div class="player-bg" id="player-bg"></div>
-
-      <div class="player-overlay">
-        <header class="player-header">
-          <div class="player-title-group">
-            <h1 id="player-track-title">Название трека</h1>
-            <p id="player-track-artist">AVZALØV</p>
-          </div>
-          <button id="player-like-btn" class="icon-btn">
-            ♥
-          </button>
-        </header>
-
-        <div class="player-cover-wrapper">
-          <div class="player-cover-border">
-            <img id="player-cover" src="" alt="cover" />
-          </div>
-        </div>
-
-        <div class="player-timeline">
-          <span id="player-current-time" class="time-text">0:00</span>
-          <input id="player-seek" type="range" min="0" max="100" value="0" />
-          <span id="player-duration" class="time-text">0:00</span>
-        </div>
-
-        <div class="player-controls">
-          <button id="btn-shuffle" class="control-btn" aria-label="Случайный порядок">
-            МИКС
-          </button>
-
-          <button id="btn-prev" class="control-btn" aria-label="Предыдущий трек">
-            НАЗАД
-          </button>
-
-          <!-- главная круглая кнопка play/pause без текста -->
-          <button
-            id="btn-play"
-            class="player-play-main"
-            data-state="play"
-            aria-label="Воспроизведение / пауза" 
-          ></button>
-
-          <button id="btn-next" class="control-btn" aria-label="Следующий трек">
-            ВПЕРЁД
-          </button>
-
-          <button id="btn-repeat" class="control-btn" aria-label="Повтор трека">
-            ПОВТОР
-          </button>
-        </div>
-
-
-        <div class="player-extra">
-          <button class="icon-btn">📶</button>
-          <button class="icon-btn">≡</button>
-        </div>
-      </div>
-
-      <audio id="audio"></audio>
-    </section>
-
-    <!-- ====== CHAT SCREEN ====== -->
-    <section id="screen-chat" class="screen">
-      <div id="chat-locked" class="locked-message">
-        Войдите, чтобы общаться в чате
-      </div>
-
-      <div id="chat-content" class="chat-content">
-        <header class="chat-header">
-          <div class="chat-user">
-            <div class="avatar-sm"></div>
-            <div>
-              <div id="chat-username" class="chat-username">Гость</div>
-              <div id="chat-status" class="chat-status">гостевой режим</div>
-            </div>
-          </div>
-          <button id="open-auth" class="icon-btn" aria-label="Войти">⋮</button>
-        </header>
-
-        <div id="chat-messages" class="chat-messages"></div>
-
-        <form id="chat-form" class="chat-input-row">
-          <input
-            id="chat-input"
-            type="text"
-            placeholder="Сообщение..."
-            autocomplete="off"
-          />
-          <button type="submit" class="chat-send-btn">Отпр.</button>
-        </form>
-      </div>
-    </section>
-
-    <link rel="icon" href="favicon.ico">
-
-    <!-- ====== PROFILE SCREEN ====== -->
-    <section id="screen-profile" class="screen">
-      <div id="profile-locked" class="locked-message">
-        Войдите, чтобы увидеть профиль
-      </div>
-      <div id="profile-content" class="profile-content">
-        <header class="profile-header">
-          <div
-            id="profile-avatar"
-            class="profile-avatar"
-            title="Сменить аватар"
-          ></div>
-          <input
-            id="avatar-input"
-            class="hidden"
-            type="file"
-            accept="image/*"
-          />
-
-          <div class="profile-stats">
-            <div class="profile-stat">
-              <span class="profile-stat-number" id="profile-tracks-count">0</span>
-              <span class="profile-stat-label">Треки</span>
-            </div>
-            <div class="profile-stat">
-              <span class="profile-stat-number" id="profile-followers-count">40.8M</span>
-              <span class="profile-stat-label">Подписчики</span>
-            </div>
-            <div class="profile-stat">
-              <span class="profile-stat-number" id="profile-following-count">0</span>
-              <span class="profile-stat-label">Подписки</span>
-            </div>
-            <div class="profile-stat">
-              <span class="profile-stat-number" id="profile-friends-count">0</span>
-              <span class="profile-stat-label">Друзья</span>
-            </div>
-          </div>
-
-          <button id="profile-edit-btn" class="profile-btn">
-            Редактировать профиль
-          </button>
-        </header>
-
-        <div id="profile-username" class="profile-username">@guest</div>
-        <div id="profile-user-id" class="profile-user-id">ID: —</div>
-        <div id="profile-role" class="profile-role">Роль: гость</div>
-        <p id="profile-bio" class="profile-bio">
-          Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
-        </p>
-
-        <nav class="profile-tabs">
-          <button class="profile-tab profile-tab--active" data-tab="tracks">
-            Треки
-          </button>
-          <button class="profile-tab" data-tab="liked">
-            Избранное
-          </button>
-          <button class="profile-tab" data-tab="about">
-            О профиле
-          </button>
-        </nav>
-
-        <div
-          id="profile-tab-tracks"
-          class="profile-tab-content profile-tab-content--active"
-        >
-          <div id="profile-tracks-grid" class="profile-grid"></div>
-        </div>
-
-        <div id="profile-tab-liked" class="profile-tab-content">
-          <p class="profile-empty-text">Пока нет избранных треков.</p>
-        </div>
-
-        <div id="profile-tab-about" class="profile-tab-content">
-          <p class="profile-about-text">
-            Здесь можно показать описание проекта, ссылки на соцсети и контакты для
-            сотрудничества.
-          </p>
-          <ul class="profile-contact-list">
-            <li>
-              <span class="profile-contact-label">Telegram:</span>
-              <span id="contact-telegram">@avzalov</span>
-            </li>
-            <li>
-              <span class="profile-contact-label">Email:</span>
-              <span id="contact-email">contact@example.com</span>
-            </li>
-            <li>
-              <span class="profile-contact-label">Instagram:</span>
-              <span id="contact-instagram">@avzalov_music</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-
-
-    <!-- ====== BOTTOM NAV ====== -->
-    <nav class="bottom-nav">
-      <button
-        data-screen="screen-player"
-        class="bottom-nav-btn bottom-nav-btn--active"
-      >
-        <span class="bottom-nav-dot"></span>
-        <span class="bottom-nav-label">Плеер</span>
-      </button>
-
-      <button data-screen="screen-chat" class="bottom-nav-btn">
-        <span class="bottom-nav-dot"></span>
-        <span class="bottom-nav-label">Чат</span>
-      </button>
-
-      <button data-screen="screen-profile" class="bottom-nav-btn">
-        <span class="bottom-nav-dot"></span>
-        <span class="bottom-nav-label">Профиль</span>
-        </button>
-      </nav>
-
-
-  </div>
-
-  <div id="auth-overlay" class="auth-overlay">
-    <div class="auth-card">
-      <button id="auth-close" class="auth-close" aria-label="Закрыть">×</button>
-      <h2 class="auth-title">Вход или гостевой режим</h2>
-      <p id="auth-subtitle" class="auth-text">
-        Выберите способ входа, чтобы открыть чат и профиль.
-      </p>
-
-      <label class="auth-label" for="auth-name-input">Имя или ник</label>
-      <input
-        id="auth-name-input"
-        type="text"
-        class="auth-input"
-        placeholder="AVZALØV фан"
-      />
-
-      <div class="auth-section">
-        <div class="auth-label">Быстрый вход</div>
-        <div class="auth-provider-grid">
-          <button class="auth-provider" data-auth-provider="yandex">Яндекс</button>
-          <button class="auth-provider" data-auth-provider="vk">ВКонтакте</button>
-          <button class="auth-provider" data-auth-provider="google">Google</button>
-        </div>
-      </div>
-
-      <div class="auth-section">
-        <div class="auth-label">Вход по коду админа</div>
-        <input
-          id="auth-code-input"
-          type="text"
-          class="auth-input"
-          placeholder="AVZ-01-01"
-        />
-        <button id="auth-submit" class="auth-btn">Войти по коду</button>
-      </div>
-
-      <button id="auth-guest" class="auth-ghost-btn">Остаться гостем</button>
-
-      <div id="auth-error" class="auth-error"></div>
-    </div>
-  </div>
-
-
-  <!-- данные с треками -->
-  <script src="./js/tracks-data.js"></script>
-  <!-- логика -->
-  <script src="./js/player.js"></script>
-  <script src="./js/chat.js"></script>
-  <script src="./js/profile.js"></script>
-  <script src="./js/app.js"></script>
-  <script src="./js/auth.js"></script>
-</body>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
