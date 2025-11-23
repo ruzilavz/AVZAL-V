@@ -114,7 +114,17 @@
       </div>
       <div id="profile-content" class="profile-content">
         <header class="profile-header">
-          <div class="profile-avatar"></div>
+          <div
+            id="profile-avatar"
+            class="profile-avatar"
+            title="Сменить аватар"
+          ></div>
+          <input
+            id="avatar-input"
+            class="hidden"
+            type="file"
+            accept="image/*"
+          />
 
           <div class="profile-stats">
             <div class="profile-stat">
@@ -129,6 +139,10 @@
               <span class="profile-stat-number" id="profile-following-count">0</span>
               <span class="profile-stat-label">Подписки</span>
             </div>
+            <div class="profile-stat">
+              <span class="profile-stat-number" id="profile-friends-count">0</span>
+              <span class="profile-stat-label">Друзья</span>
+            </div>
           </div>
 
           <button id="profile-edit-btn" class="profile-btn">
@@ -137,6 +151,7 @@
         </header>
 
         <div id="profile-username" class="profile-username">@guest</div>
+        <div id="profile-user-id" class="profile-user-id">ID: —</div>
         <div id="profile-role" class="profile-role">Роль: гость</div>
         <p id="profile-bio" class="profile-bio">
           Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.

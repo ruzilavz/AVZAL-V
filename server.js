@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const { randomUUID } = require("crypto");
 
 const chatRouter = require("./routes/chat");
 
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 3000;
 // ====== ХРАНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЕЙ ======
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_LOG_PATH = path.join(DATA_DIR, "users-log.json");
+const USERS_ACCOUNTS_PATH = path.join(DATA_DIR, "users-accounts.json");
 
 function ensureStorage() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -21,6 +23,10 @@ function ensureStorage() {
 
   if (!fs.existsSync(USERS_LOG_PATH)) {
     fs.writeFileSync(USERS_LOG_PATH, "[]", "utf8");
+  }
+
+  if (!fs.existsSync(USERS_ACCOUNTS_PATH)) {
+    fs.writeFileSync(USERS_ACCOUNTS_PATH, "[]", "utf8");
   }
 }
 
@@ -37,6 +43,57 @@ function persistUserRecord(record) {
 
   users.push(record);
   fs.writeFileSync(USERS_LOG_PATH, JSON.stringify(users, null, 2), "utf8");
+}
+
+function readAccounts() {
+  ensureStorage();
+  try {
+    const raw = fs.readFileSync(USERS_ACCOUNTS_PATH, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (e) {}
+  return [];
+}
+
+function saveAccounts(list) {
+  fs.writeFileSync(USERS_ACCOUNTS_PATH, JSON.stringify(list, null, 2), "utf8");
+}
+
+function generateUserId() {
+  if (typeof randomUUID === "function") {
+    return randomUUID();
+  }
+  return `avz-${Date.now().toString(36)}-${Math.floor(Math.random() * 9999)}`;
+}
+
+function findOrCreateUser({ name, methodLabel, role }) {
+  const accounts = readAccounts();
+  const normalized = name.trim().toLowerCase();
+  const existing = accounts.find(
+    (u) => u.method === methodLabel && u.normalized === normalized
+  );
+
+  if (existing) {
+    existing.name = name;
+    existing.role = role;
+    existing.lastLoginAt = new Date().toISOString();
+    saveAccounts(accounts);
+    return existing;
+  }
+
+  const newUser = {
+    id: generateUserId(),
+    name,
+    normalized,
+    method: methodLabel,
+    role,
+    createdAt: new Date().toISOString(),
+    lastLoginAt: new Date().toISOString(),
+  };
+
+  accounts.push(newUser);
+  saveAccounts(accounts);
+  return newUser;
 }
 
 ensureStorage();
@@ -117,19 +174,27 @@ app.post("/api/login", (req, res) => {
     usedCode = record.code;
   }
 
-  persistUserRecord({
+  const user = findOrCreateUser({
     name: displayName,
-    method: methodLabel,
+    methodLabel,
     role,
+  });
+
+  persistUserRecord({
+    id: user.id,
+    name: user.name,
+    method: user.method,
+    role: user.role,
     code: usedCode,
     loggedAt: new Date().toISOString(),
   });
 
   return res.json({
     ok: true,
-    name: displayName,
-    role,
-    method: methodLabel,
+    id: user.id,
+    name: user.name,
+    role: user.role,
+    method: user.method,
     code: usedCode,
   });
 });
