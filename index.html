@@ -75,106 +75,116 @@
 
     <!-- ====== CHAT SCREEN ====== -->
     <section id="screen-chat" class="screen">
-      <header class="chat-header">
-        <div class="chat-user">
-          <div class="avatar-sm"></div>
-          <div>
-            <div class="chat-username">AVZALØV чат</div>
-            <div class="chat-status">онлайн</div>
+      <div id="chat-locked" class="locked-message">
+        Войдите, чтобы общаться в чате
+      </div>
+
+      <div id="chat-content" class="chat-content">
+        <header class="chat-header">
+          <div class="chat-user">
+            <div class="avatar-sm"></div>
+            <div>
+              <div id="chat-username" class="chat-username">Гость</div>
+              <div id="chat-status" class="chat-status">гостевой режим</div>
+            </div>
           </div>
-        </div>
-        <button class="icon-btn">⋮</button>
-      </header>
+          <button id="open-auth" class="icon-btn" aria-label="Войти">⋮</button>
+        </header>
 
-      <!-- Только сообщения -->
-      <div id="chat-messages" class="chat-messages"></div>
+        <div id="chat-messages" class="chat-messages"></div>
 
-      <form id="chat-form" class="chat-input-row">
-        <input
-          id="chat-input"
-          type="text"
-          placeholder="Сообщение..."
-          autocomplete="off"
-        />
-        <button type="submit" class="chat-send-btn">Отпр.</button>
-      </form>
+        <form id="chat-form" class="chat-input-row">
+          <input
+            id="chat-input"
+            type="text"
+            placeholder="Сообщение..."
+            autocomplete="off"
+          />
+          <button type="submit" class="chat-send-btn">Отпр.</button>
+        </form>
+      </div>
     </section>
 
     <link rel="icon" href="favicon.ico">
 
     <!-- ====== PROFILE SCREEN ====== -->
     <section id="screen-profile" class="screen">
-      <header class="profile-header">
-        <div class="profile-avatar"></div>
+      <div id="profile-locked" class="locked-message">
+        Войдите, чтобы увидеть профиль
+      </div>
+      <div id="profile-content" class="profile-content">
+        <header class="profile-header">
+          <div class="profile-avatar"></div>
 
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="profile-tracks-count">0</span>
-            <span class="profile-stat-label">Треки</span>
+          <div class="profile-stats">
+            <div class="profile-stat">
+              <span class="profile-stat-number" id="profile-tracks-count">0</span>
+              <span class="profile-stat-label">Треки</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-number" id="profile-followers-count">40.8M</span>
+              <span class="profile-stat-label">Подписчики</span>
+            </div>
+            <div class="profile-stat">
+              <span class="profile-stat-number" id="profile-following-count">0</span>
+              <span class="profile-stat-label">Подписки</span>
+            </div>
           </div>
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="profile-followers-count">40.8M</span>
-            <span class="profile-stat-label">Подписчики</span>
-          </div>
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="profile-following-count">0</span>
-            <span class="profile-stat-label">Подписки</span>
-          </div>
+
+          <button id="profile-edit-btn" class="profile-btn">
+            Редактировать профиль
+          </button>
+        </header>
+
+        <div id="profile-username" class="profile-username">@guest</div>
+        <div id="profile-role" class="profile-role">Роль: гость</div>
+        <p id="profile-bio" class="profile-bio">
+          Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
+        </p>
+
+        <nav class="profile-tabs">
+          <button class="profile-tab profile-tab--active" data-tab="tracks">
+            Треки
+          </button>
+          <button class="profile-tab" data-tab="liked">
+            Избранное
+          </button>
+          <button class="profile-tab" data-tab="about">
+            О профиле
+          </button>
+        </nav>
+
+        <div
+          id="profile-tab-tracks"
+          class="profile-tab-content profile-tab-content--active"
+        >
+          <div id="profile-tracks-grid" class="profile-grid"></div>
         </div>
 
-        <button id="profile-edit-btn" class="profile-btn">
-          Редактировать профиль
-        </button>
-      </header>
+        <div id="profile-tab-liked" class="profile-tab-content">
+          <p class="profile-empty-text">Пока нет избранных треков.</p>
+        </div>
 
-      <div class="profile-username">@avzalov</div>
-      <div id="profile-role" class="profile-role">Роль: гость</div>
-      <p id="profile-bio" class="profile-bio">
-        Официальный профиль AVZALØV. Релизы, ранний доступ и музыка.
-      </p>
-
-      <nav class="profile-tabs">
-        <button class="profile-tab profile-tab--active" data-tab="tracks">
-          Треки
-        </button>
-        <button class="profile-tab" data-tab="liked">
-          Избранное
-        </button>
-        <button class="profile-tab" data-tab="about">
-          О профиле
-        </button>
-      </nav>
-
-      <div
-        id="profile-tab-tracks"
-        class="profile-tab-content profile-tab-content--active"
-      >
-        <div id="profile-tracks-grid" class="profile-grid"></div>
-      </div>
-
-      <div id="profile-tab-liked" class="profile-tab-content">
-        <p class="profile-empty-text">Пока нет избранных треков.</p>
-      </div>
-
-      <div id="profile-tab-about" class="profile-tab-content">
-        <p class="profile-about-text">
-          Здесь можно показать описание проекта, ссылки на соцсети и контакты для
-          сотрудничества.
-        </p>
-        <ul class="profile-contact-list">
-          <li>
-            <span class="profile-contact-label">Telegram:</span>
-            <span id="contact-telegram">@avzalov</span>
-          </li>
-          <li>
-            <span class="profile-contact-label">Email:</span>
-            <span id="contact-email">contact@example.com</span>
-          </li>
-          <li>
-            <span class="profile-contact-label">Instagram:</span>
-            <span id="contact-instagram">@avzalov_music</span>
-          </li>
-        </ul>
+        <div id="profile-tab-about" class="profile-tab-content">
+          <p class="profile-about-text">
+            Здесь можно показать описание проекта, ссылки на соцсети и контакты для
+            сотрудничества.
+          </p>
+          <ul class="profile-contact-list">
+            <li>
+              <span class="profile-contact-label">Telegram:</span>
+              <span id="contact-telegram">@avzalov</span>
+            </li>
+            <li>
+              <span class="profile-contact-label">Email:</span>
+              <span id="contact-email">contact@example.com</span>
+            </li>
+            <li>
+              <span class="profile-contact-label">Instagram:</span>
+              <span id="contact-instagram">@avzalov_music</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -206,15 +216,42 @@
 
   <div id="auth-overlay" class="auth-overlay">
     <div class="auth-card">
-      <h2 class="auth-title">Вход по коду</h2>
-      <p class="auth-text">Введи код, который выдал админ проекта.</p>
+      <button id="auth-close" class="auth-close" aria-label="Закрыть">×</button>
+      <h2 class="auth-title">Вход или гостевой режим</h2>
+      <p id="auth-subtitle" class="auth-text">
+        Выберите способ входа, чтобы открыть чат и профиль.
+      </p>
+
+      <label class="auth-label" for="auth-name-input">Имя или ник</label>
       <input
-        id="auth-code-input"
+        id="auth-name-input"
         type="text"
         class="auth-input"
-        placeholder="AVZA-1000"
+        placeholder="AVZALØV фан"
       />
-      <button id="auth-submit" class="auth-btn">Войти</button>
+
+      <div class="auth-section">
+        <div class="auth-label">Быстрый вход</div>
+        <div class="auth-provider-grid">
+          <button class="auth-provider" data-auth-provider="yandex">Яндекс</button>
+          <button class="auth-provider" data-auth-provider="vk">ВКонтакте</button>
+          <button class="auth-provider" data-auth-provider="google">Google</button>
+        </div>
+      </div>
+
+      <div class="auth-section">
+        <div class="auth-label">Вход по коду админа</div>
+        <input
+          id="auth-code-input"
+          type="text"
+          class="auth-input"
+          placeholder="AVZ-01-01"
+        />
+        <button id="auth-submit" class="auth-btn">Войти по коду</button>
+      </div>
+
+      <button id="auth-guest" class="auth-ghost-btn">Остаться гостем</button>
+
       <div id="auth-error" class="auth-error"></div>
     </div>
   </div>

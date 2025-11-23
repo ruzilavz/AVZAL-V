@@ -3,11 +3,43 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 
 const chatRouter = require("./routes/chat");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ====== ХРАНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЕЙ ======
+const DATA_DIR = path.join(__dirname, "data");
+const USERS_LOG_PATH = path.join(DATA_DIR, "users-log.json");
+
+function ensureStorage() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+
+  if (!fs.existsSync(USERS_LOG_PATH)) {
+    fs.writeFileSync(USERS_LOG_PATH, "[]", "utf8");
+  }
+}
+
+function persistUserRecord(record) {
+  ensureStorage();
+
+  let users = [];
+  try {
+    const raw = fs.readFileSync(USERS_LOG_PATH, "utf8");
+    users = JSON.parse(raw);
+  } catch (e) {
+    users = [];
+  }
+
+  users.push(record);
+  fs.writeFileSync(USERS_LOG_PATH, JSON.stringify(users, null, 2), "utf8");
+}
+
+ensureStorage();
 
 // ====== MIDDLEWARE ======
 app.use(cors());
@@ -42,32 +74,63 @@ BASE_ROLES.forEach((role, idx) => {
   }
 });
 
-// ====== ЛОГИН ПО КОДУ ======
+// ====== ЛОГИН ======
+
+const METHOD_LABELS = {
+  yandex: "Яндекс ID",
+  vk: "VK ID",
+  google: "Google",
+  admin_code: "Код админа",
+};
 
 app.post("/api/login", (req, res) => {
-  const { code } = req.body || {};
+  const { method, name, code } = req.body || {};
 
-  if (!code) {
-    return res.status(400).json({ ok: false, error: "Код обязателен" });
+  if (!method || !METHOD_LABELS[method]) {
+    return res
+      .status(400)
+      .json({ ok: false, error: "Неизвестный способ входа" });
   }
 
-  const trimmed = String(code).trim().toUpperCase();
-  const record = ACCESS_CODES.find((c) => c.code === trimmed);
-
-  if (!record) {
-    return res.status(401).json({ ok: false, error: "Неверный код" });
+  if (!name || !String(name).trim()) {
+    return res.status(400).json({ ok: false, error: "Введите имя" });
   }
 
-  // если хочешь одноразовые коды – можно включить:
-  // if (record.used) {
-  //   return res.status(403).json({ ok: false, error: "Код уже использован" });
-  // }
-  // record.used = true;
+  const displayName = String(name).trim();
+  const methodLabel = METHOD_LABELS[method];
+  let role = "Гость";
+  let usedCode = null;
+
+  if (method === "admin_code") {
+    if (!code) {
+      return res.status(400).json({ ok: false, error: "Введите код админа" });
+    }
+
+    const trimmed = String(code).trim().toUpperCase();
+    const record = ACCESS_CODES.find((c) => c.code === trimmed);
+
+    if (!record) {
+      return res.status(401).json({ ok: false, error: "Неверный код" });
+    }
+
+    role = record.role;
+    usedCode = record.code;
+  }
+
+  persistUserRecord({
+    name: displayName,
+    method: methodLabel,
+    role,
+    code: usedCode,
+    loggedAt: new Date().toISOString(),
+  });
 
   return res.json({
     ok: true,
-    code: record.code,
-    role: record.role,
+    name: displayName,
+    role,
+    method: methodLabel,
+    code: usedCode,
   });
 });
 
