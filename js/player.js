@@ -48,6 +48,12 @@ function getTrackAudioUrl(track) {
 function loadTrack(index) {
   if (!tracks.length) return;
 
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  isPlaying = false;
+  updatePlayButton();
+  playerScreen.classList.remove("is-playing");
+
   if (index < 0) index = tracks.length - 1;
   if (index >= tracks.length) index = 0;
   currentIndex = index;
@@ -62,6 +68,7 @@ function loadTrack(index) {
   bgEl.style.backgroundImage = `url(${coverUrl})`;
 
   audioEl.src = getTrackAudioUrl(track);
+  audioEl.load();
   seekEl.value = 0;
   timeCurrentEl.textContent = "0:00";
   timeDurationEl.textContent = "0:00";
@@ -80,7 +87,10 @@ function play() {
       updatePlayButton();
       playerScreen.classList.add("is-playing");
     })
-    .catch(console.error);
+    .catch((err) => {
+      if (err?.name === "AbortError") return;
+      console.error(err);
+    });
 }
 
 function pause() {
