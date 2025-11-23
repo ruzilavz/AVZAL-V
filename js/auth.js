@@ -128,6 +128,7 @@ async function login(method) {
   try {
     const data = await sendLoginRequest(payload);
     setAuth({
+      id: data.id,
       name: data.name,
       method: data.method,
       role: data.role,

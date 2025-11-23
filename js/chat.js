@@ -20,6 +20,8 @@ const chatUsers = {
   },
 };
 
+window.chatUsers = chatUsers;
+
 function getTime() {
   const now = new Date();
   return `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
@@ -53,6 +55,13 @@ function buildFallbackReply(userText) {
   }
 
   return "Я сейчас без подключения к ИИ, но всё равно стараюсь отвечать 🙂";
+}
+
+function shouldBotRespond(text) {
+  const normalized = text.toLowerCase();
+  return ["авза", "авзал", "avza", "avzal", "бот", "@avzabot"].some((key) =>
+    normalized.includes(key)
+  );
 }
 
 // рендер диалога: микро‑профиль + сообщение — один блок
@@ -106,6 +115,10 @@ function renderChat() {
       friendBtn.addEventListener("click", () => {
         user.isFriend = !user.isFriend;
         friendBtn.textContent = user.isFriend ? "В друзьях" : "Добавить";
+
+        if (window.syncFriendshipWithProfile) {
+          window.syncFriendshipWithProfile(user.id, user.isFriend);
+        }
       });
 
       actions.appendChild(dmBtn);
@@ -183,6 +196,10 @@ chatFormEl.addEventListener("submit", async (e) => {
   });
   chatInputEl.value = "";
   renderChat();
+
+  if (!shouldBotRespond(text)) {
+    return;
+  }
 
   try {
     const answer = await sendToBot();
