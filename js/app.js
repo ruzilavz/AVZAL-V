@@ -26,6 +26,18 @@ document.addEventListener("DOMContentLoaded", () => {
   navButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.screen;
+
+      if (
+        (target === "screen-chat" || target === "screen-profile") &&
+        !(window.isAuthenticated && window.isAuthenticated())
+      ) {
+        if (window.requireAuthOverlay) {
+          window.requireAuthOverlay(target);
+        }
+        switchScreen(target);
+        return;
+      }
+
       switchScreen(target);
     });
   });

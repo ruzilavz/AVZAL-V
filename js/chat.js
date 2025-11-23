@@ -8,7 +8,7 @@ const chatInputEl = document.getElementById("chat-input");
 const chatUsers = {
   me: {
     id: "me",
-    name: "Вы",
+    name: "Гость",
     username: "@you",
     isFriend: true,
   },
@@ -33,6 +33,12 @@ const chatState = [
     time: getTime(),
   },
 ];
+
+function setChatUserName(name) {
+  chatUsers.me.name = name || "Гость";
+}
+
+window.setChatUserName = setChatUserName;
 
 // запасной локальный ответ, если OpenAI недоступен
 function buildFallbackReply(userText) {
@@ -159,6 +165,13 @@ chatFormEl.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = chatInputEl.value.trim();
   if (!text) return;
+
+  if (!(window.isAuthenticated && window.isAuthenticated())) {
+    if (window.requireAuthOverlay) {
+      window.requireAuthOverlay("screen-chat");
+    }
+    return;
+  }
 
   const time = getTime();
 

@@ -7,6 +7,7 @@ const profileEditBtn = document.getElementById("profile-edit-btn");
 const profileTabs = document.querySelectorAll(".profile-tab");
 const profileTabContents = document.querySelectorAll(".profile-tab-content");
 const profileRoleEl = document.getElementById("profile-role");
+const profileUsernameEl = document.getElementById("profile-username");
 
 const contactEls = {
   telegram: document.getElementById("contact-telegram"),
@@ -21,6 +22,13 @@ let profileData = {
   email: contactEls.email.textContent,
   instagram: contactEls.instagram.textContent,
 };
+
+function updateProfileUser() {
+  const name = String(window.currentUser?.name || "guest");
+  if (profileUsernameEl) {
+    profileUsernameEl.textContent = `@${name.toLowerCase().replace(/\s+/g, "_")}`;
+  }
+}
 
 function renderProfileTracks() {
   const tracks = window.RELEASED_TRACKS_DATA || [];
@@ -62,6 +70,7 @@ function updateProfileRole() {
 }
 
 window.updateProfileRole = updateProfileRole;
+window.updateProfileUser = updateProfileUser;
 
 // вкладки
 profileTabs.forEach((btn) => {
@@ -127,3 +136,4 @@ try {
 
 renderProfileTracks();
 updateProfileRole();
+updateProfileUser();
